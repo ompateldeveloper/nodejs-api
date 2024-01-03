@@ -39,7 +39,6 @@ const AuthController = {
 
             res.apiCreated(payload);
         } catch (error) {
-            console.log(error);
             res.apiError(error)
         }
     },
@@ -67,7 +66,7 @@ const AuthController = {
             } 
             res.apiSuccess(payload);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.apiError(error);
         }
     },
 
@@ -75,10 +74,9 @@ const AuthController = {
         try {
             const user = req.user.toObject();
             delete user.password;
-
-                res.apiSuccess(user);
+            res.apiSuccess({data:user});
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.apiError( error);
         }
     },
 

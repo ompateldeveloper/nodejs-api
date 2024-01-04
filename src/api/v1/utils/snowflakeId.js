@@ -1,5 +1,6 @@
 import { Snowflake } from "@theinternetfolks/snowflake";
 
-export default function generateId(){
+const snowflakeId = () => {
     return Snowflake.generate()
 }
+export default snowflakeId

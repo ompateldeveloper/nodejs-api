@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { getAll, getOne, addOne, deleteOne,updateOne } from "../controllers/communityController.js";
+import CommunityController from "../controllers/communityController.js";
+const communityRouter = Router()
 
-const musicRouter = Router()
+communityRouter.post('/',CommunityController.createCommunity) // Create
+communityRouter.get('/',CommunityController.getCommunities) // Get All
+communityRouter.get('/:id/members',CommunityController.getMembers) //Get All Members
+communityRouter.get('/me/owner',CommunityController.getMeOwner) //GEt My Owned COmmunity
+communityRouter.get('/me/member',CommunityController.getMeMember) //Getmy Joined Community
 
-musicRouter.get("/",getAll)
-musicRouter.get("/:item",getOne)
-musicRouter.post("/",addOne)
-musicRouter.put("/:item",updateOne)
-musicRouter.delete("/:item",deleteOne)
 
-export default musicRouter
+export default communityRouter

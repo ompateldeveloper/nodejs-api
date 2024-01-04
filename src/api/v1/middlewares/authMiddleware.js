@@ -9,10 +9,12 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const token = authorization.split(' ')[1]
+    if(!token) return res.apiError('NOT_SIGNEDIN')
 
     try {
         const {id} = jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findOne({id:id})
+        if(!user) return res.apiError('UNAUTHORIZED_TOKEN')
         req.user = user
         next()
     } catch (error) {

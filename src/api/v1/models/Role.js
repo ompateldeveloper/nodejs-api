@@ -1,12 +1,12 @@
 import mongoose, { Schema } from "mongoose";
-import generateId from "../utils/generateId.js";
+import snowflakeId from "../utils/snowflakeId.js";
 
 const roleSchema = new Schema({
     id: {
         type: String,
-        default: generateId(),
+        default: snowflakeId,
         required: true,
-        // unique: true,
+        unique: true,
     },
     name: {
         type: String,

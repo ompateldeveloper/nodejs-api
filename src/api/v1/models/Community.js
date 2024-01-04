@@ -1,13 +1,12 @@
-import { Snowflake } from "@theinternetfolks/snowflake";
-import { Schema } from "mongoose";
-import generateId from "../utils/generateId.js";
+import mongoose, { Schema } from "mongoose";
+import snowflakeId from "../utils/snowflakeId.js";
 
 const communitySchema = new Schema({
     id: {
         type: String,
-        default: generateId(),
+        default: snowflakeId,
         required: true,
-        // unique: true,
+        unique: true,
     },
     name: {
         type: String,
@@ -15,7 +14,6 @@ const communitySchema = new Schema({
     },
     slug: {
         type: String,
-        unique: true,
     },
     owner: {
         type: String,

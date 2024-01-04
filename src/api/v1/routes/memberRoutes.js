@@ -1,12 +1,8 @@
 import { Router } from "express";
-import { getAll, getOne, addOne, deleteOne,updateOne } from "../controllers/communityController.js";
+import MemberController from "../controllers/memberController.js";
 
-const musicRouter = Router()
+const memberRouter = Router()
+memberRouter.post('/',MemberController.createMember)
+memberRouter.delete('/',MemberController.deleteMember)
 
-musicRouter.get("/",getAll)
-musicRouter.get("/:item",getOne)
-musicRouter.post("/",addOne)
-musicRouter.put("/:item",updateOne)
-musicRouter.delete("/:item",deleteOne)
-
-export default musicRouter
+export default memberRouter;

@@ -3,7 +3,7 @@ import RoleController from "../controllers/roleController.js";
 
 const roleRouter = Router()
 
-roleRouter.post('/role',RoleController.createRole)
-roleRouter.get('/role',RoleController.getRoles)
+roleRouter.post('/',RoleController.createRole)
+roleRouter.get('/',RoleController.getRoles)
 
 export default roleRouter

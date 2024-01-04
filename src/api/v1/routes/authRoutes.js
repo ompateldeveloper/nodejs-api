@@ -3,9 +3,9 @@ import AuthController from "../controllers/authController.js"
 import authMiddleware from "../middlewares/authMiddleware.js";
 const authRouter = Router()
 
-authRouter.post("/auth/signup",AuthController.signup)
-authRouter.post("/auth/signin",AuthController.signin)   
-authRouter.get("/auth/me",authMiddleware,AuthController.getMe)   
+authRouter.post("/signup",AuthController.signup)
+authRouter.post("/signin",AuthController.signin)   
+authRouter.get("/me",authMiddleware,AuthController.getMe)   
 
 
 export default authRouter

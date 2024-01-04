@@ -1,21 +1,100 @@
 import Community from '../models/Community.js';
-
+import Member from '../models/Member.js';
+import paginate from '../utils/pagination.js';
+import Validator from "validatorjs";
+import generateSlug from '../utils/generateSlug.js';
+import Role from '../models/Role.js';
 const CommunityController = {
     createCommunity: async (req, res) => {
         try {
-            const newCommunity = await Community.create(req.body);
-            res.status(201).json(newCommunity);
+
+            const data = {
+                name: req.body.name,
+                slug: generateSlug(req.body.name),
+                owner: req.user.id
+            }
+            
+            const validation = new Validator(data, {
+                name: 'required|min:2',
+                owner: 'required'
+            });
+
+            if (validation.fails()) return res.apiError(validation.errors.all());
+
+            const exists = await Community.findOne({name:req.body.name});
+            if(exists) return res.apiError('ALREADY_EXISTS');
+
+            const newCommunity = (await Community.create(data));
+            delete newCommunity?._id;
+            const {id:roleId} = await Role.findOne({name:"Community Admin"});
+            console.log(roleId);
+            const joincommunity = await Member.create({
+                community:newCommunity.id,
+                user:req.user.id,
+                role: roleId
+            });
+            res.apiCreated({data:newCommunity});
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.apiError(error);
         }
     },
 
     getCommunities: async (req, res) => {
         try {
-            const communities = await Community.find();
-            res.status(200).json(communities);
+            const page = req.query.page || 1;
+            const pageSize = req.query.pageSize || 10;
+            const totalItems = await Community.countDocuments();
+            const totalPages = Math.ceil(totalItems / pageSize);
+    
+            const communities = await Community.find()
+                .skip((page - 1) * pageSize)
+                .limit(pageSize);
+    
+            const meta = {
+                total: totalItems,
+                pages: totalPages,
+                page: page,
+            };          
+            return res.apiSuccess({ meta, data: communities });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.apiError(error);
+        }
+    },
+
+    getMembers: async (req, res) => {
+        try {
+            const communityId = req.params.id;
+            // Implement logic to get members of the specified community based on communityId
+            // ...
+
+            res.apiSuccess(/* Provide the members data here */);
+        } catch (error) {
+            res.apiError(error);
+        }
+    },
+
+    getMeOwner: async (req, res) => {
+        try {
+            const ownerId = req.user.id;
+            const page = req.query.page || 1;
+            const pageSize = req.query.pageSize || 10;
+
+            const { paginationInfo, items: communities } = await paginate(Community, page, pageSize,{owner:ownerId});
+            res.apiSuccess({meta:paginationInfo,data:communities});
+        } catch (error) {
+            res.apiError(error);
+        }
+    },
+
+    getMeMember: async (req, res) => {
+        try {
+            const userId = req.user.id;
+            const memeberof = await Member.find()
+            
+            const joinedCommunities = await Community.find()
+            res.apiSuccess({data:joinedCommunities});
+        } catch (error) {
+            res.apiError(error);
         }
     },
 };

@@ -22,7 +22,7 @@ const responseFormatterMiddleware = (req, res, next) => {
       res.status(status).json({
         status: false,
         content: {
-          error: error.message || error,
+          error: error,
         },
       });
     };

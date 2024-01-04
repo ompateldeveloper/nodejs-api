@@ -10,7 +10,7 @@ const AuthController = {
             const validation = new Validator(req.body, {
                 name: 'required|min:2',
                 email: 'required|email',
-                password: 'required|min:6',
+                password: ['required','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]+$/'],
             });
         
             if (validation.fails()) {
@@ -49,7 +49,7 @@ const AuthController = {
         try {
             const validation = new Validator(req.body, {
                 email: 'required|email',
-                password: 'required|min:6|regex:[A-Z]|regex:[a-z]|regex:\\d',
+                password: ['required','regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]+$/'],
             });
         
             if (validation.fails()) {

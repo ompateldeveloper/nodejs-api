@@ -1,19 +1,22 @@
 import bcrypt from "bcrypt"
 import User from "../models/User.js";
-import jwt from "jsonwebtoken"
-
-const generateToken = (user) => {
-    const payload = {
-      id: user.id,
-      email: user.email,
-    };
-    const secretKey = process.env.JWT_SECRET;
-    return jwt.sign(payload, secretKey);
-};
-
+import generateToken from "../utils/generateToken.js"
+import sanitizeUser from "../utils/sanitizeUser.js"
+import Validator from "validatorjs"
 const AuthController = {
     signup: async (req, res) => {
         try {
+
+            const validation = new Validator(req.body, {
+                name: 'required|min:2',
+                email: 'required|email',
+                password: 'required|min:6',
+            });
+        
+            if (validation.fails()) {
+                return res.apiError(validation.errors.all());
+            }
+
             const exists = await User.findOne({ email: req.body.email });
             if (exists) {
                 return res.apiError('ALREADY_EXISTS',409);
@@ -26,15 +29,14 @@ const AuthController = {
                 email: req.body.email,
                 password: hashedPassword,
             });
-            const userWtPasswd = {...newUser.toObject()}
-            delete userWtPasswd.password
+            const sanitizedUser = sanitizeUser(newUser);
             const token = generateToken(newUser);
         
             const payload = {
                 meta:{
                     access_token:token
                 },
-                data:userWtPasswd
+                data:sanitizedUser
             } 
 
             res.apiCreated(payload);
@@ -45,6 +47,15 @@ const AuthController = {
 
     signin: async (req, res) => {
         try {
+            const validation = new Validator(req.body, {
+                email: 'required|email',
+                password: 'required|min:6|regex:[A-Z]|regex:[a-z]|regex:\\d',
+            });
+        
+            if (validation.fails()) {
+                return res.apiError(validation.errors.all());
+            }
+            
             const user = await User.findOne({ email: req.body.email });
             if (!user) {
                 return res.apiError('Invalid email or password',401);
@@ -54,15 +65,14 @@ const AuthController = {
             if (!match) {
                 return res.apiError('Invalid email or password.',401);
             }
-            const userWtPasswd = {...user.toObject()}
-            delete userWtPasswd.password
+            const sanitizedUser = sanitizeUser(user);
             const token = generateToken(user);
 
             const payload = {
                 meta:{
                     access_token:token
                 },
-                data:userWtPasswd
+                data:sanitizedUser
             } 
             res.apiSuccess(payload);
         } catch (error) {
@@ -72,8 +82,7 @@ const AuthController = {
 
     getMe: async (req, res) => {
         try {
-            const user = req.user.toObject();
-            delete user.password;
+            const user = sanitizeUser(req.user);
             res.apiSuccess({data:user});
         } catch (error) {
             res.apiError( error);

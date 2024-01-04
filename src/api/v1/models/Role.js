@@ -1,12 +1,12 @@
-import { Schema } from "mongoose";
-import { Snowflake } from "@theinternetfolks/snowflake";
+import mongoose, { Schema } from "mongoose";
+import generateId from "../utils/generateId.js";
 
 const roleSchema = new Schema({
     id: {
         type: String,
-        default: Snowflake.generate(),
+        default: generateId(),
         required: true,
-        unique: true,
+        // unique: true,
     },
     name: {
         type: String,
@@ -14,11 +14,12 @@ const roleSchema = new Schema({
         unique: true,
     },
     created_at: {
-        type: Date,
-        default: Date.now,
+        type:Date,
+        default:Date.now
     },
     updated_at: {
-        type: Date,
+        type:Date,
+        default:Date.now
     },
 });
 

@@ -1,12 +1,12 @@
 import mongoose, { Schema } from "mongoose";
-import { Snowflake } from "@theinternetfolks/snowflake";
+import generateId from "../utils/generateId.js";
 
 const userSchema = new Schema({
     id: {
         type: String,
-        default: Snowflake.generate(),
+        default: generateId(),
         required: true,
-        unique: true,
+        // unique: true,
     },
     name: {
         type: String,
@@ -21,9 +21,13 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    created_at: {
-        type: Date,
-        default: Date.now,
+    created_at:{
+        type:Date,
+        default:Date.now
+    },
+    updated_at:{
+        type:Date,
+        default:Date.now
     },
 });
 

@@ -1,12 +1,9 @@
 import { Router } from "express";
-import { getAll, getOne, addOne, deleteOne,updateOne } from "../controllers/communityController.js";
+import RoleController from "../controllers/roleController.js";
 
-const musicRouter = Router()
+const roleRouter = Router()
 
-musicRouter.get("/",getAll)
-musicRouter.get("/:item",getOne)
-musicRouter.post("/",addOne)
-musicRouter.put("/:item",updateOne)
-musicRouter.delete("/:item",deleteOne)
+roleRouter.post('/role',RoleController.createRole)
+roleRouter.get('/role',RoleController.getRoles)
 
-export default musicRouter
+export default roleRouter

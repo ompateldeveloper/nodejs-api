@@ -1,12 +1,13 @@
 import { Snowflake } from "@theinternetfolks/snowflake";
 import { Schema } from "mongoose";
+import generateId from "../utils/generateId.js";
 
 const communitySchema = new Schema({
     id: {
         type: String,
-        default: Snowflake.generate(),
+        default: generateId(),
         required: true,
-        unique: true,
+        // unique: true,
     },
     name: {
         type: String,
@@ -22,11 +23,12 @@ const communitySchema = new Schema({
         ref: 'User',
     },
     created_at: {
-        type: Date,
-        default: Date.now,
+        type:Date,
+        default:Date.now
     },
     updated_at: {
-        type: Date,
+        type:Date,
+        default:Date.now
     },
 });
 

@@ -87,10 +87,12 @@ const CommunityController = {
     getMeMember: async (req, res) => {
         try {
             const userId = req.user.id;
-            const memeberof = await Member.find()
-
-            const joinedCommunities = await Community.find()
-            res.apiSuccess({data:joinedCommunities});
+            const memberof = await Member.find({user:userId});
+            const communities = memberof.map(member => member.community);
+            
+            const joinedCommunities = await Community.find({ id: { $in: communities } });
+            const filteredCommunities = joinedCommunities.filter((community)=>{community.owner!==userId})
+            res.apiSuccess({data:filteredCommunities});
         } catch (error) {
             res.apiError(error);
         }

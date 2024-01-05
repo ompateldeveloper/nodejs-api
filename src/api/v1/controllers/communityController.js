@@ -64,10 +64,8 @@ const CommunityController = {
     getMembers: async (req, res) => {
         try {
             const communityId = req.params.id;
-            // Implement logic to get members of the specified community based on communityId
-            // ...
-
-            res.apiSuccess(/* Provide the members data here */);
+            const members = await Member.find({community:communityId})
+            res.apiSuccess({data:members});
         } catch (error) {
             res.apiError(error);
         }
@@ -90,7 +88,7 @@ const CommunityController = {
         try {
             const userId = req.user.id;
             const memeberof = await Member.find()
-            
+
             const joinedCommunities = await Community.find()
             res.apiSuccess({data:joinedCommunities});
         } catch (error) {

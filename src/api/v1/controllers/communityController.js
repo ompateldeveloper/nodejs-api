@@ -64,6 +64,8 @@ const CommunityController = {
     getMembers: async (req, res) => {
         try {
             const communityId = req.params.id;
+            const exist = await Community.findOne({id:communityId})
+            if(!exist) return res.apiError('COMMUNITY_NOT_EXIST') 
             const members = await Member.find({community:communityId})
             res.apiSuccess({data:members});
         } catch (error) {
